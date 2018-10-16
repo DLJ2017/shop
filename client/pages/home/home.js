@@ -1,5 +1,6 @@
 // pages/home/home.js
 const qcloud=require('../../vendor/wafer2-client-sdk/index.js')
+const config=require('../../config.js')
 
 Page({
 
@@ -20,7 +21,7 @@ Page({
 
   getProduct(){
     qcloud.request({
-      url: 'https://kaoqkmap.qcloud.la/weapp/product',
+      url: config.service.productList,
       success: result => {
         //console.log(result.data.data)
         this.setData({

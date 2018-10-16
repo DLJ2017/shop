@@ -8,8 +8,14 @@ module.exports={
   },
 
   detail:async ctx=>{
-    let productId=+ctx.params.productId  //获取API中商品编号
-
-    ctx.state.data=await DB.query('SELECT * FROM product where product.id=?',[productId])
+    let productId=+ctx.params.id  //获取API中商品编号
+    let product={}
+    if(!isNaN(productId)){
+      product = (await DB.query('select * from product where product.id = ?', [productId]))[0]; //不返回数组，直接返回对象
+    }else{
+      product={}
+    }
+    ctx.state.data=product;
+     
   }
 }

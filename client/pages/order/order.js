@@ -1,55 +1,18 @@
-// client/pages/detail/detail.js
-const qcloud = require('../../vendor/wafer2-client-sdk/index.js')
-const config=require('../../config.js')
-
+// pages/order/order.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    product: {},
+
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-     this.getProduct(options.id)
-  },
 
-  getProduct(id){
-    wx.showLoading({
-      title: '商品数据加载中',
-    })
-
-    qcloud.request({
-      url: config.service.productDetail + id,
-      success: result => {
-       wx.hideLoading()
-
-       let data=result.data
-       console.log(data);
-
-       if(!data.code){
-         this.setData({
-           product:data.data
-         })
-       }else{
-         setTimeout(()=>{
-           wx.navigateBack()
-         },2000)
-       }
-
-      },
-      fail: result => {
-        wx.hideLoading()
-
-        setTimeout(() => {
-          wx.navigateBack()
-        }, 2000)
-      }
-    })
   },
 
   /**

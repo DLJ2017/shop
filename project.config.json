@@ -8,6 +8,7 @@
 	},
 	"appid": "wxc0322c334beecc6f",
 	"projectname": "shop",
+	"compileType": "miniprogram",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -25,12 +26,18 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": -1,
 					"name": "商品详情",
-					"pathName": "pages/detail/detail"
+					"pathName": "pages/detail/detail",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "user",
+					"pathName": "pages/user/user"
 				}
 			]
 		}
