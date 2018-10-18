@@ -30,7 +30,7 @@
 			"list": [
 				{
 					"id": 0,
-					"name": "商品详情",
+					"name": "detail",
 					"pathName": "pages/detail/detail",
 					"query": "id=1"
 				},
@@ -38,6 +38,12 @@
 					"id": -1,
 					"name": "user",
 					"pathName": "pages/user/user",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "trolley",
+					"pathName": "pages/trolley/trolley",
 					"query": ""
 				}
 			]

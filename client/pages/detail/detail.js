@@ -52,11 +52,13 @@ Page({
     })
   },
 
+//商品购买
   buy() {
     wx.showLoading({
       title: '商品购买中...',
     })
-
+    
+    //Object.assign
     let product = Object.assign({
       count: 1
     }, this.data.product)
@@ -92,6 +94,45 @@ Page({
         wx.showToast({
           icon: 'none',
           title: '商品购买失败',
+        })
+      }
+    })
+  },
+
+  //加入购物车
+  addTrolley(){
+    wx.showLoading({
+      title: '正在添加到购物车...',
+    })
+
+    qcloud.request({
+      url: config.service.addTrolley,
+      login: true,
+      //使用PUT，
+      method: 'PUT',
+      data:this.data.product,
+      success: result => {
+        wx.hideLoading()
+
+        let data = result.data
+  
+        if (!data.code) {
+          wx.showToast({
+            title: '已添加到购物车',
+          })
+        } else {
+          wx.showToast({
+            icon: 'none',
+            title: '添加到购物车失败',
+          })
+        }
+      },
+      fail: () => {
+        wx.hideLoading()
+
+        wx.showToast({
+          icon: 'none',
+          title: '添加到购物车失败',
         })
       }
     })

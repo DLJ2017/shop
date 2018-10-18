@@ -35,6 +35,8 @@ var config = {
 
       // 获取已购买订单列表
       orderList: `${host}/weapp/order`,
+
+      addTrolley: `${host}/weapp/trolley`,
     }
 };
 
