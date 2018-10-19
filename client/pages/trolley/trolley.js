@@ -80,6 +80,55 @@ Page({
     })
   },
 
+
+  //多选
+  onTapCheckTotal(){
+       let trolleyCheckMap=this.data.trolleyCheckMap
+       let trolleyList=this.data.trolleyList
+       let isTrolleyTotalCheck=this.data.isTrolleyTotalCheck
+
+        //全选按钮被选中/取消
+        isTrolleyTotalCheck=!isTrolleyTotalCheck
+        
+        //遍历并修改所有商品的状态
+        trolleyList.forEach(product =>{
+          trolleyCheckMap[product.id]=isTrolleyTotalCheck
+        })
+
+        this.setData({
+          isTrolleyTotalCheck,
+          trolleyCheckMap
+        })
+
+
+  },
+
+  //单选
+   onTapCheckSingle(event){
+     let checkId = event.currentTarget.dataset.id
+     let trolleyCheckMap = this.data.trolleyCheckMap
+     let trolleyList = this.data.trolleyList
+     let isTrolleyTotalCheck = this.data.isTrolleyTotalCheck
+     let numTotalProduct
+     let numCheckedProduct = 0
+
+      //单选商品被选中/取消
+     trolleyCheckMap[checkId] = !trolleyCheckMap[checkId]
+
+      //判断选中的商品个数是否与商品总数相等
+     numTotalProduct = trolleyList.length
+     trolleyCheckMap.forEach(checked=>{
+       numCheckedProduct=(checked?numCheckedProduct+1:numCheckedProduct)
+     })
+
+     isTrolleyTotalCheck=(numTotalProduct===numCheckedProduct?true:false)
+
+      this.setData({
+        trolleyCheckMap,
+        isTrolleyTotalCheck
+      })
+   },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
