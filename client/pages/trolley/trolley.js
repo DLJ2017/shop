@@ -22,13 +22,15 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
 
   },
 
-  onTapLogin: function () {
+  onTapLogin: function() {
     app.login({
-      success: ({ userInfo }) => {
+      success: ({
+        userInfo
+      }) => {
         this.setData({
           userInfo,
           locationAuthType: app.data.locationAuthType
@@ -82,87 +84,146 @@ Page({
 
 
   //多选
-  onTapCheckTotal(){
-       let trolleyCheckMap=this.data.trolleyCheckMap
-       let trolleyList=this.data.trolleyList
-       let isTrolleyTotalCheck=this.data.isTrolleyTotalCheck
+  onTapCheckTotal() {
+    let trolleyCheckMap = this.data.trolleyCheckMap
+    let trolleyList = this.data.trolleyList
+    let isTrolleyTotalCheck = this.data.isTrolleyTotalCheck
 
-        //全选按钮被选中/取消
-        isTrolleyTotalCheck=!isTrolleyTotalCheck
-        
-        //遍历并修改所有商品的状态
-        trolleyList.forEach(product =>{
-          trolleyCheckMap[product.id]=isTrolleyTotalCheck
-        })
+    //全选按钮被选中/取消
+    isTrolleyTotalCheck = !isTrolleyTotalCheck
 
-        trolleyAccount=this.calcAccount(trolleyList,trolleyCheckMap)
+    //遍历并修改所有商品的状态
+    trolleyList.forEach(product => {
+      trolleyCheckMap[product.id] = isTrolleyTotalCheck
+    })
 
-        this.setData({
-          isTrolleyTotalCheck,
-          trolleyCheckMap,
-          trolleyAccount
-        })
+    trolleyAccount = this.calcAccount(trolleyList, trolleyCheckMap)
+
+    this.setData({
+      isTrolleyTotalCheck,
+      trolleyCheckMap,
+      trolleyAccount
+    })
 
 
   },
 
   //单选
-   onTapCheckSingle(event){
-     let checkId = event.currentTarget.dataset.id
-     let trolleyCheckMap = this.data.trolleyCheckMap
-     let trolleyList = this.data.trolleyList
-     let isTrolleyTotalCheck = this.data.isTrolleyTotalCheck
-     let trolleyAccount=this.data.trolleyAccount
-     let numTotalProduct
-     let numCheckedProduct = 0
+  onTapCheckSingle(event) {
+    let checkId = event.currentTarget.dataset.id
+    let trolleyCheckMap = this.data.trolleyCheckMap
+    let trolleyList = this.data.trolleyList
+    let isTrolleyTotalCheck = this.data.isTrolleyTotalCheck
+    let trolleyAccount = this.data.trolleyAccount
+    let numTotalProduct
+    let numCheckedProduct = 0
 
-      //单选商品被选中/取消
-     trolleyCheckMap[checkId] = !trolleyCheckMap[checkId]
+    //单选商品被选中/取消
+    trolleyCheckMap[checkId] = !trolleyCheckMap[checkId]
 
-      //判断选中的商品个数是否与商品总数相等
-     numTotalProduct = trolleyList.length
-     trolleyCheckMap.forEach(checked=>{
-       numCheckedProduct=(checked?numCheckedProduct+1:numCheckedProduct)
-     })
+    //判断选中的商品个数是否与商品总数相等
+    numTotalProduct = trolleyList.length
+    trolleyCheckMap.forEach(checked => {
+      numCheckedProduct = (checked ? numCheckedProduct + 1 : numCheckedProduct)
+    })
 
-     isTrolleyTotalCheck=(numTotalProduct===numCheckedProduct?true:false)
+    isTrolleyTotalCheck = (numTotalProduct === numCheckedProduct ? true : false)
 
-     trolleyAccount=this.calcAccount(trolleyList,trolleyCheckMap)
+    trolleyAccount = this.calcAccount(trolleyList, trolleyCheckMap)
 
-      this.setData({
-        trolleyCheckMap,
-        isTrolleyTotalCheck,
-        trolleyAccount
-      })
-   },
-   calcAccount(trolleyList,trolleyCheckMap){
-       let account=0
-       trolleyList.forEach(product=>{
-         account=trolleyCheckMap[product.id]?account+product.price*product.count:account
-       })
+    this.setData({
+      trolleyCheckMap,
+      isTrolleyTotalCheck,
+      trolleyAccount
+    })
+  },
 
-       //返回
-       return account
-   },
+  //计算总价
+  calcAccount(trolleyList, trolleyCheckMap) {
+    let account = 0
+    trolleyList.forEach(product => {
+      account = trolleyCheckMap[product.id] ? account + product.price * product.count : account
+    })
+
+    //返回
+    return account
+  },
+
+  //编辑/完成状态切换
+  onTapEditTrolley() {
+    let isTrolleyEdit = this.data.isTrolleyEdit
+
+    this.setData({
+      isTrolleyEdit: !isTrolleyEdit
+    })
+  },
+  //数量加减
+  adjustTrolleyProductCount(event) {
+    let trolleyCheckMap = this.data.trolleyCheckMap
+    let trolleyList = this.data.trolleyList
+    let dataset = event.currentTarget.dataset
+    //data.type
+    let adjustType = dataset.type
+    let productId = dataset.id
+    //将找到的商品TrolleyList[index]传给product
+    let product
+    let index
+
+    for (index = 0; index < trolleyList.length; index++) {
+      if (productId === trolleyList[index].id) {
+        product = trolleyList[index]
+        break
+      }
+    }
+
+    if (product) {
+      if (adjustType === "add") {
+        //点击加号
+        product.count++
+      } else {
+        //点击减号
+        if (product.count <= 1) {
+          //删除对象中的配对，trolleyCheckMap本质上也是一个对象
+          delete trolleyCheckMap[productId]
+          //删除数组元素
+          trolleyList.splice(index, 1)
+        } else {
+          //商品数量大于1
+          product.count--
+        }
+      }
+    }
+    
+    //调整结算总价
+    let trolleyAccount=this.calcAccount(trolleyList,trolleyCheckMap)
+
+    this.setData({
+      trolleyAccount,
+      trolleyList,
+      trolleyCheckMap
+    })
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
     // 同步授权状态
     this.setData({
       locationAuthType: app.data.locationAuthType
     })
     //用户已登录，check session
     app.checkSession({
-      success: ({ userInfo }) => {
+      success: ({
+        userInfo
+      }) => {
         this.setData({
           userInfo
         })
@@ -175,35 +236,35 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })
