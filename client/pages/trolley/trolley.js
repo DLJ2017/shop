@@ -12,22 +12,8 @@ Page({
     userInfo: null,
     locationAuthType: app.data.locationAuthType,
     //模拟数据
-    trolleyList: [{
-      id: 1,
-      name: '商品1',
-      image: 'https://s3.cn-north-1.amazonaws.com.cn/u-img/product1.jpg',
-      price: 45,
-      source: '海外·瑞典',
-      count: 1,
-    }, {
-      id: 2,
-      name: '商品2',
-      image: 'https://s3.cn-north-1.amazonaws.com.cn/u-img/product2.jpg',
-      price: 158,
-      source: '海外·新西兰',
-      count: 3,
-    }], // 购物车商品列表
-    trolleyCheckMap: [undefined, true, undefined], // 购物车中选中的id哈希表
+    trolleyList: [], // 购物车商品列表
+    trolleyCheckMap: [], // 购物车中选中的id哈希表
     trolleyAccount: 45, // 购物车结算总价
     isTrolleyEdit: false, // 购物车是否处于编辑状态
     isTrolleyTotalCheck: true, // 购物车中商品是否全选
@@ -47,10 +33,48 @@ Page({
           userInfo,
           locationAuthType: app.data.locationAuthType
         })
+
+        this.getTrolley()
       },
       error: () => {
         this.setData({
           locationAuthType: app.data.locationAuthType
+        })
+      }
+    })
+  },
+
+  getTrolley() {
+    wx.showToast({
+      title: '刷新购物车数据',
+    })
+
+    qcloud.request({
+      url: config.service.trolleyList,
+      login: true,
+      success: result => {
+        wx.hideLoading()
+
+        let data = result.data
+
+        if (!data.code) {
+          this.setData({
+            trolleyList: data.data
+          })
+        } else {
+          wx.showToast({
+            icon: 'none',
+            title: '数据刷新失败',
+          })
+        }
+
+      },
+      fail: () => {
+        wx.hideLoading()
+
+        wx.showToast({
+          icon: 'none',
+          title: '数据刷新失败',
         })
       }
     })
@@ -71,11 +95,14 @@ Page({
     this.setData({
       locationAuthType: app.data.locationAuthType
     })
+    //用户已登录，check session
     app.checkSession({
       success: ({ userInfo }) => {
         this.setData({
           userInfo
         })
+        this.getTrolley()
+
       }
     })
   },

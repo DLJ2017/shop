@@ -1,28 +1,37 @@
-const DB=require("../utils/db.js")
+const DB = require("../utils/db.js")
 
 
-module.exports={
+module.exports = {
   /**
    * 添加到购物车列表
    */
-  add:async ctx=>{
+  add: async ctx => {
     let user = ctx.state.$wxInfo.userinfo.openId
     let product = ctx.request.body
 
     let list = await DB.query('SELECT * FROM trolley_user WHERE trolley_user.id = ? AND trolley_user.user = ?', [product.id, user])
 
 
-    if(!list.length){
+    if (!list.length) {
       //商品还未添加到购物车
       await DB.query('INSERT INTO trolley_user(id, count, user) VALUES (?, ?, ?)', [product.id, 1, user])
     } else {
       //商品之前已经添加到购物车,获取现有商品数量并加1
-      let count=list[0].count+1
+      let count = list[0].count + 1
       //使用update
       await DB.query('UPDATE trolley_user SET count = ? WHERE trolley_user.id = ? AND trolley_user.user = ?', [count, product.id, user])
     }
-     
+
     //??内存?
-    ctx.state.data={}
+    ctx.state.data = {}
+  },
+
+  /**
+   * 拉取购物车商品列表
+   */
+  list: async ctx => {
+    let user = ctx.state.$wxInfo.userinfo.openId
+
+    ctx.state.data = await DB.query('SELECT * FROM trolley_user LEFT JOIN product ON trolley_user.id=product.id WHERE trolley_user.user=?', [user])
   }
 }
