@@ -253,7 +253,105 @@ Page({
     })
   },
   onTapPay(){
-    
+    if(!this.data.trolleyAccount)  return
+
+    wx.showToast({
+      title: '结算中...',
+    })
+
+    let trolleyList=this.data.trolleyList
+    let trolleyCheckMap=this.data.trolleyCheckMap
+     
+    //filter筛选出购物车列表中被勾选的商品，并针对这些商品进行购买。判断是否被勾选，使用双感叹号
+    let needToPayProductList=trolleyList.filter(product=>{
+      return !!trolleyCheckMap[product.id]
+    })
+
+    //请求后台
+    qcloud.request({
+      url:config.service.addOrder,
+      login:true,
+      method:'POST',
+      data:{
+        list:needToPayProductList,
+        isInstantBuy: true
+      },
+      success:result=>{
+        wx.hideLoading()
+
+        let data=result.data
+
+        if(!data.code){
+          wx.showToast({
+            title: '结算成功',
+          })
+          this.getTrolley()
+        }else{
+          wx.showToast({
+            icon:'none',
+            title: '结算失败',
+          })
+        }
+      },
+      fail:()=>{
+        wx.hideLoading()
+
+        wx.showToast({
+          icon: 'none',
+          title: '结算失败',
+        })
+      }
+    })
+  }, 
+  onTapPay() {
+    if (!this.data.trolleyAccount) return
+
+    wx.showLoading({
+      title: '结算中...',
+    })
+
+    let trolleyCheckMap = this.data.trolleyCheckMap
+    let trolleyList = this.data.trolleyList
+
+    let needToPayProductList = trolleyList.filter(product => {
+      return !!trolleyCheckMap[product.id]
+    })
+
+    // 请求后台
+    qcloud.request({
+      url: config.service.addOrder,
+      login: true,
+      method: 'POST',
+      data: {
+        list: needToPayProductList
+      },
+      success: result => {
+        wx.hideLoading()
+
+        let data = result.data
+
+        if (!data.code) {
+          wx.showToast({
+            title: '结算成功',
+          })
+
+          this.getTrolley()
+        } else {
+          wx.showToast({
+            icon: 'none',
+            title: '结算失败',
+          })
+        }
+      },
+      fail: () => {
+        wx.hideLoading()
+
+        wx.showToast({
+          icon: 'none',
+          title: '结算失败',
+        })
+      }
+    })
   },
 
 
