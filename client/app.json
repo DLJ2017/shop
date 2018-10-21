@@ -4,7 +4,8 @@
     "pages/detail/detail",
     "pages/user/user",
     "pages/order/order",
-    "pages/trolley/trolley"
+    "pages/trolley/trolley",
+    "pages/add-comment/add-comment"
   ],
   "tabBar":{
       "list":[
