@@ -35,15 +35,17 @@ router.post('/message', controllers.message.post)
 router.get('/product', controllers.product.list)
 // 获取商品详情
 router.get('/product/:id', controllers.product.detail)
-// 创建订单
+// 创建订单  需要授权登录
 router.post('/order', validationMiddleware, controllers.order.add)
 // 显示已购买订单
 router.get('/order', validationMiddleware, controllers.order.list)
-//商品添加到购物车列表   put
+//商品添加到购物车列表   put请求
 router.put('/trolley',validationMiddleware,controllers.trolley.add)
 //获取购物车商品列表
 router.get('/trolley', validationMiddleware, controllers.trolley.list)
 //更新购物车商品列表
 router.post('/trolley',validationMiddleware,controllers.trolley.update)
+//添加评论 put请求
+router.put('/comment',validationMiddleware,controllers.comment.add)
 
 module.exports = router
