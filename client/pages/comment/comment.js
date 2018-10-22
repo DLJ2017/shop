@@ -1,25 +1,37 @@
 // pages/comment/comment.js
+const qcloud = require('../../vendor/wafer2-client-sdk/index')
+const config = require('../../config')
+const _ = require('../../utils/util')
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    commentList: [{
-      avatar: '/images/user.png',
-      username: 'test1',
-      createTime: '2018年01月01日',
-      content: '测试评论',
-    },
-      {
-        avatar: '/images/user.png',
-        username: 'test2',
-        createTime: '2018年02月01日',
-        content: '测试评论',
-      }
-    ]//评论列表
+    commentList: []//评论列表
   },
 
+  getCommentList(id){
+      qcloud.request({
+        url:config.service.commentList,
+        data:{
+          product_id:id
+        },
+        success:result=>{
+          let data=result.data
+          if(!data.code){
+            this.setData({
+              commentList:data.data.map(item=>{
+                let itemDate=new Date(item.create_time)
+                item.create_time=_.formatTime(itemDate)
+                return item
+              })
+            })
+          }
+        }
+      })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -33,6 +45,7 @@ Page({
        this.setData({
          product:product
        })
+       this.getCommentList(product.id)
   },
 
   /**
