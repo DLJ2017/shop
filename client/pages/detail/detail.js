@@ -9,41 +9,40 @@ Page({
    */
   data: {
     product: {},
-    haveComment:true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-     this.getProduct(options.id)
+    this.getProduct(options.id)
   },
 
-  getProduct(id){
+  //获取详情信息
+  getProduct(id) {
     wx.showLoading({
-      title: '商品数据加载中',
+      title: '商品数据加载中...',
     })
 
     qcloud.request({
       url: config.service.productDetail + id,
       success: result => {
-       wx.hideLoading()
+        wx.hideLoading()
 
-       let data=result.data
-       console.log(data);
+        let data = result.data
+        console.log(data);
 
-       if(!data.code){
-         this.setData({
-           product:data.data
-         })
-       }else{
-         setTimeout(()=>{
-           wx.navigateBack()
-         },2000)
-       }
-
+        if (!data.code) {
+          this.setData({
+            product: data.data
+          })
+        } else {
+          setTimeout(() => {
+            wx.navigateBack()
+          }, 2000)
+        }
       },
-      fail: result => {
+      fail: () => {
         wx.hideLoading()
 
         setTimeout(() => {
@@ -52,7 +51,6 @@ Page({
       }
     })
   },
-
 //商品购买
   buy() {
     wx.showLoading({
@@ -141,7 +139,7 @@ Page({
   },
   onTapCommentEntry(){
      let product=this.data.product
-     if(this.data.haveComment){
+     if(product.commentCount){
           wx.navigateTo({
             url: `/pages/comment/comment?id=${product.id}&price=${product.price}&name=${product.name}&image=${product.image}`,
           })
