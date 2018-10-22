@@ -5,14 +5,34 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    commentList: [{
+      avatar: '/images/user.png',
+      username: 'test1',
+      createTime: '2018年01月01日',
+      content: '测试评论',
+    },
+      {
+        avatar: '/images/user.png',
+        username: 'test2',
+        createTime: '2018年02月01日',
+        content: '测试评论',
+      }
+    ]//评论列表
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+       let product={
+         id: options.id,
+         name: options.name,
+         price: options.price,
+         image: options.image
+       }
+       this.setData({
+         product:product
+       })
   },
 
   /**
